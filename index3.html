@@ -1,0 +1,81 @@
+<style type="text/css">
+html,body{margin:0;padding:0}
+</style>
+<canvas id="view"></canvas>
+<script type="text/javascript">
+var view = document.getElementById('view').getContext('2d');
+function draw()
+{
+   var x,y = 0; 
+   var w = window.innerWidth;
+   var h = window.innerHeight;
+   window.onresize = function() {
+      view.canvas.width = w = window.innerWidth; 
+      view.canvas.height = h = window.innerHeight;
+      view.fillStyle = "rgb(255,255,255)";
+      view.clearRect(0,0,w,h);
+      view.fillStyle = "rgb(0,0,0)";
+   }
+
+   var numRecs = 300;
+   var maxVelocity = 100;
+   var recWidth = Math.ceil(w/numRecs);
+   var colors = new Array();
+   var velocity = new Array();
+   var j = 0;
+   var colors = getColors(numRecs);
+   var velocity = getVelocities(numRecs,maxVelocity);
+
+   function frame()
+   {
+      for(var i = 0; i < numRecs; i++)
+      {
+         var v = j === 0 ? 0 : velocity[i];
+         view.fillStyle = colors[i];
+         view.fillRect(i*recWidth,j+v - (maxVelocity*2),recWidth,velocity[i]+2);
+      }
+      j += 1;
+      if(j > h + maxVelocity*2){ j = 0; velocity = getVelocities(numRecs,maxVelocity); colors = getColors(numRecs); }
+   }
+
+   //document.addEventListener('mousemove',move,false);
+
+   function getColors(num)
+   {
+      var colors = new Array();
+      for(var i = 0; i < num; i++)
+      {
+         colors[i] = '#'+Math.floor(Math.random()*16777215).toString(16);
+      }
+
+      return colors;
+   }
+
+   function getVelocities(num,range)
+   {
+      var vel = new Array();
+      for(var i = 0; i < num; i++)
+      {
+         vel[i] = Math.random()*range;
+      }
+
+      return vel;
+   }
+
+   return { frame: frame};
+}
+
+function init(){
+   view.canvas.width  = window.innerWidth;
+   view.canvas.height = window.innerHeight;
+   var d = null;
+   function step(){
+       d = d === null ? draw() : d;
+       d.frame();
+       setTimeout(step, 1);
+   }
+   step();
+}
+
+init();
+</script>

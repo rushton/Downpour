@@ -1,0 +1,58 @@
+<style type="text/css">
+html,body{margin:0;padding:0}
+</style>
+<canvas id="view"></canvas>
+<script type="text/javascript">
+var view = document.getElementById('view').getContext('2d');
+function draw()
+{
+   var x,y = 0; 
+   var w = window.innerWidth;
+   var h = window.innerHeight;
+   window.onresize = function() {
+      view.canvas.width = w = window.innerWidth; 
+      view.canvas.height = h = window.innerHeight;
+      view.fillStyle = "rgb(255,255,255)";
+      view.clearRect(0,0,w,h);
+      view.fillStyle = "rgb(0,0,0)";
+   }
+
+   var recWidth = Math.floor(w/10);
+   var numRecs = w/recWidth;
+   var colors = new Array();
+   var j = 0;
+   var k = 0;
+   for(var i = 0; i < 10; i++)
+   {
+      colors[i] = '#'+Math.floor(Math.random()*16777215).toString(16);
+   }
+   function frame()
+   {
+      for(var i = 0; i < numRecs; i++)
+      {
+         view.fillStyle = colors[i];
+         view.fillRect(i*recWidth,j + k,recWidth,1);
+      }
+      j += 10;
+      if(j > h){ j = 0; k++; }
+   }
+
+   //document.addEventListener('mousemove',move,false);
+
+   return { frame: frame};
+}
+
+function init(){
+   view.canvas.width  = window.innerWidth;
+   view.canvas.height = window.innerHeight;
+   var d = null;
+   function step(){
+       d = d === null ? draw() : d;
+       d.frame();
+       setTimeout(step, 1);
+   }
+   step();
+}
+
+init();
+</script>

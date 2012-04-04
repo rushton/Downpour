@@ -1,0 +1,47 @@
+<style type="text/css">
+html,body{margin:0;padding:0}
+</style>
+<canvas id="view"></canvas>
+<script type="text/javascript">
+var view = document.getElementById('view').getContext('2d');
+function draw()
+{
+   var w,h,x,y = 0; 
+   window.onresize = function() {
+      view.canvas.width = w = window.innerWidth; 
+      view.canvas.height = h = window.innerHeight;
+      view.fillStyle = "rgb(255,255,255)";
+      view.clearRect(0,0,w,h);
+      view.fillStyle = "rgb(0,0,0)";
+   }
+
+   function frame()
+   {
+      view.fillStyle = '#'+Math.floor(Math.random()*16777215).toString(16);
+      view.fillRect(x,y,100,100);
+   }
+
+   function move(e)
+   {
+      x = e.pageX;
+      y = e.pageY;
+   }
+   document.addEventListener('mousemove',move,false);
+
+   return { frame: frame};
+}
+
+function init(){
+   view.canvas.width  = window.innerWidth;
+   view.canvas.height = window.innerHeight;
+   var d = null;
+   function step(){
+       d = d === null ? draw() : d;
+       d.frame();
+       setTimeout(step, 8);
+   }
+   step();
+}
+
+init();
+</script>
